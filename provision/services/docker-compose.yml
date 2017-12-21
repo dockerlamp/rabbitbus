@@ -1,0 +1,43 @@
+version: "2"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.6.10-management
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=50%
+    mem_limit: 512m
+    restart: unless-stopped
+  producer:
+    image: node:8.9.3
+    volumes:
+      - ../..:/app/src
+      - ../../package.json:/app/package.json
+      # - ../../package-lock.json:/app/package-lock.json
+      - nodecache:/root/.npm
+      - nodemodules:/app/node_modules
+    working_dir: /app
+    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/producer.js"
+    # command: ["node", "microservices/producer"]
+    restart: unless-stopped
+    links: 
+      - rabbitmq
+  consumer:
+    image: node:8.9.3
+    volumes:
+      - ../..:/app/src
+      - ../../package.json:/app/package.json
+      # - ../../package-lock.json:/app/package-lock.json      
+      - nodecache:/root/.npm
+      - nodemodules:/app/node_modules      
+    working_dir: /app
+    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/consumer.js"
+    # command: ["node", "microservices/consumer"]    
+    restart: unless-stopped
+    links: 
+      - rabbitmq    
+volumes:
+  rabbitdata:
+  nodemodules:
+  nodecache:
