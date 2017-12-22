@@ -1,7 +1,9 @@
 console.log('Producer started');
 
 const amqp = require('amqplib');
-const simpleQueueChannel = require('./create-simple-queue-channel');
+
+const simpleQueueChannel = require('message-bus/create-simple-queue-channel');
+
 let startProducer = async () => {
     let channel = await simpleQueueChannel.getChannel();   
     let queueName = simpleQueueChannel.getQueueName();

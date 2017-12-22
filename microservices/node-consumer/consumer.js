@@ -3,7 +3,7 @@ console.log('Consumer started');
 const stats = require('measured').createCollection();
 const amqp = require('amqplib');
 
-const simpleQueueChannel = require('./create-simple-queue-channel');
+const simpleQueueChannel = require('message-bus/create-simple-queue-channel');
 
 let startConsumer = async () => {
     let channel = await simpleQueueChannel.getChannel();   
