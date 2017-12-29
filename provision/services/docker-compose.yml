@@ -18,7 +18,7 @@ services:
       - nodecache:/root/.npm
       - nodemodules:/app/node_modules
     working_dir: /app
-    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/producer.js"
+    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/node-producer/producer.js"
     # command: ["node", "microservices/producer"]
     restart: unless-stopped
     links: 
@@ -32,7 +32,7 @@ services:
       - nodecache:/root/.npm
       - nodemodules:/app/node_modules      
     working_dir: /app
-    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/consumer.js"
+    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/node-consumer/consumer.js"
     # command: ["node", "microservices/consumer"]    
     restart: unless-stopped
     links: 

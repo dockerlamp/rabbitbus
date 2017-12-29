@@ -16,7 +16,7 @@ let startProducer = async () => {
         let payload = JSON.stringify(obj);
         channel.sendToQueue(queueName, new Buffer(payload));
             // .catch(err => console.error('sendToQueue error', err));
-        // console.log(" [x] Sent", payload);
+        console.log(" [x] Sent", payload);
     }, 1000);
 };
 
