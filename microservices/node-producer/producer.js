@@ -2,19 +2,22 @@ console.log('Producer started');
 
 const amqp = require('amqplib');
 
-const simpleQueueChannel = require('message-bus/create-simple-queue-channel');
+const messageBus = require('message-bus/create-durable-queue-channel');
+let counter = 0;
 
 let startProducer = async () => {
-    let channel = await simpleQueueChannel.getChannel();   
-    let queueName = simpleQueueChannel.getQueueName();
+    let channel = await messageBus.getChannel();   
+    let queueName = messageBus.getQueueName();
     console.log(` [*] Producer will send messages to queue "${queueName}"`);
     
     setInterval(() => {
+        counter++;
         let obj = {
-            value: 'Hello World!' + Math.round(Math.random()*1000)
+            value: 'Hello World!' + Math.round(Math.random()*1000),
+            counter
         }
         let payload = JSON.stringify(obj);
-        channel.sendToQueue(queueName, new Buffer(payload));
+        channel.sendToQueue(queueName, new Buffer(payload), { persistent: true});
             // .catch(err => console.error('sendToQueue error', err));
         console.log(" [x] Sent", payload);
     }, 1000);
