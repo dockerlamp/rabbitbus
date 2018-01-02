@@ -10,7 +10,7 @@ let sendHelloWorldCommand = async (channel, queueName) => {
     try {
         counter++;
         let obj = {
-            value: 'Hello World!' + Math.round(Math.random()*1000),
+            value: 'Hello World! ' + Math.round(Math.random()*1000),
             counter
         }
         let payload = JSON.stringify(obj);
