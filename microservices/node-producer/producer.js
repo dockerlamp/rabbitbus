@@ -1,6 +1,7 @@
 console.log('Producer started');
 
 const amqp = require('amqplib');
+const retry = require('bluebird-retry');
 
 const messageBus = require('message-bus/create-durable-queue-channel');
 
@@ -18,19 +19,20 @@ let sendHelloWorldCommand = async (channel, queueName) => {
         console.log("[+] Sent", payload, sendResult);
     } catch (err) {
         console.error('[-] Another way to catch error?', err);
+        // setTimeout(() => process.exit(0), 500);
     }
 };
 
+let connectionCounter = 0;
 let startProducer = async () => {
+    console.log('Connecting to rabbit, try', ++connectionCounter);
     let channel = await messageBus.getChannel();   
-    channel.on('error', err => {
-        console.error('[-] producer channel error', err);
-    });
     let queueName = messageBus.getQueueName();
     console.log(`[+] Producer will send messages to queue "${queueName}"`);
     
     setInterval(() => sendHelloWorldCommand(channel, queueName), 1000);
 };
 
-startProducer()
+
+retry(startProducer, {max_tries: 30, throw_original: true} )
     .catch(err => console.error('[-] start producer error', err));
