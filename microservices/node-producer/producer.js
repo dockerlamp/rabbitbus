@@ -8,31 +8,55 @@ const messageBus = require('message-bus/create-durable-queue-channel');
 let counter = 0;
 
 let sendHelloWorldCommand = async (channel, queueName) => {
-    try {
-        counter++;
-        let obj = {
-            value: 'Hello World! ' + Math.round(Math.random()*1000),
-            counter
-        }
-        let payload = JSON.stringify(obj);
-        let sendResult = channel.sendToQueue(queueName, new Buffer(payload), { persistent: true});
-        console.log("[+] Sent", payload, sendResult);
-    } catch (err) {
-        console.error('[-] Another way to catch error?', err);
-        // setTimeout(() => process.exit(0), 500);
+    counter++;
+    let obj = {
+        value: 'Hello World! ' + Math.round(Math.random()*1000),
+        counter
     }
+    let payload = JSON.stringify(obj);
+    let sendResult = channel.sendToQueue(queueName, new Buffer(payload), { persistent: true});
+    console.log("[+] Sent", payload, sendResult);
 };
 
 let connectionCounter = 0;
 let startProducer = async () => {
-    console.log('Connecting to rabbit, try', ++connectionCounter);
-    let channel = await messageBus.getChannel();   
-    let queueName = messageBus.getQueueName();
-    console.log(`[+] Producer will send messages to queue "${queueName}"`);
+    let channel;   
+    let queueName;
+    let connect = async () => {
+        if (!channel) {
+            console.log('[=] Connecting to rabbit, try', ++connectionCounter);
+            channel = await messageBus.getChannel();   
+            queueName = messageBus.getQueueName();
+            console.log(`[=] Producer conneced to bus/queue "${queueName}"`);
+        } else {
+            //console.log(`[=] Producer already conneced to bus/queue "${queueName}"`);
+        }
+    };
+    let intervalCounter = 0;
+    let intervalCommand = () => {
+        let tempIntervalCounter = intervalCounter++;
+        let retrySendCounter = 0;
+        let tempChannel;
+        let connectAndSend = async () => {
+            let tempCounter = retrySendCounter++;
+            if (tempCounter) console.log(`[-] Retry send ${tempIntervalCounter}/${tempCounter}`);
+            await connect();
+            await sendHelloWorldCommand(channel, queueName);
+        }; 
+        retry( connectAndSend, {max_tries: 10 /*, throw_original: true*/})
+        // connectAndSend()
+            .catch((err) => {
+                console.error('[-] Another way to catch error?', err.message, err.name);
+                if (channel) {
+                    console.log(`[-] Closing channel for interval ${tempIntervalCounter}`);
+                    channel.close();
+                    channel = null;
+                }
+            });
+    }
     
-    setInterval(() => sendHelloWorldCommand(channel, queueName), 1000);
+    setInterval(intervalCommand, 5000);
 };
-
 
 retry(startProducer, {max_tries: 30, throw_original: true} )
     .catch(err => console.error('[-] start producer error', err));
