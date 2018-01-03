@@ -1,6 +1,5 @@
 console.log('Producer started');
 
-const amqp = require('amqplib');
 const retry = require('bluebird-retry');
 
 const messageBus = require('message-bus/create-durable-queue-channel');
@@ -12,10 +11,10 @@ let sendHelloWorldCommand = async (channel, queueName) => {
     let obj = {
         value: 'Hello World! ' + Math.round(Math.random()*1000),
         counter
-    }
+    };
     let payload = JSON.stringify(obj);
     let sendResult = channel.sendToQueue(queueName, new Buffer(payload), { persistent: true});
-    console.log("[+] Sent", payload, sendResult);
+    console.log('[+] Sent', payload, sendResult);
 };
 
 let connectionCounter = 0;
@@ -36,7 +35,6 @@ let startProducer = async () => {
     let intervalCommand = () => {
         let tempIntervalCounter = intervalCounter++;
         let retrySendCounter = 0;
-        let tempChannel;
         let connectAndSend = async () => {
             let tempCounter = retrySendCounter++;
             if (tempCounter) console.log(`[-] Retry send ${tempIntervalCounter}/${tempCounter}`);
@@ -53,7 +51,7 @@ let startProducer = async () => {
                     channel = null;
                 }
             });
-    }
+    };
     
     setInterval(intervalCommand, 5000);
 };
