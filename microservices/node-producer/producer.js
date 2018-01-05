@@ -4,13 +4,12 @@ const retry = require('bluebird-retry');
 
 const messageBus = require('message-bus/create-durable-queue-channel');
 
-let counter = 0;
-
+let sendCommandCounter = 0;
 let sendHelloWorldCommand = async (channel, queueName) => {
-    counter++;
+    sendCommandCounter++;
     let obj = {
         value: 'Hello World! ' + Math.round(Math.random()*1000),
-        counter
+        count: sendCommandCounter
     };
     let payload = JSON.stringify(obj);
     let sendResult = channel.sendToQueue(queueName, new Buffer(payload), { persistent: true});
