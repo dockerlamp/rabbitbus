@@ -1,0 +1,19 @@
+{
+    "name": "dockerlamp/rabbitbus",
+    "description": "Example of rabbitmq message bus implementation",
+    "version": "0.0.1",
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=7.0.0",
+        "ext-bcmath": "*",
+        "ext-json": "*",
+
+        "php-amqplib/php-amqplib": "^2.6"
+    },
+    "autoload": {
+    },
+    "config": {
+        "cache-dir": "./local-composer-cache"
+    }
+} 
