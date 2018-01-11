@@ -9,7 +9,7 @@ services:
       - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=50%
     mem_limit: 512m
     restart: unless-stopped
-  producer:
+  node-producer:
     image: node:8.9.3
     volumes:
       - ../..:/app/src
@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     links: 
       - rabbitmq
-  consumer:
+  node-consumer:
     image: node:8.9.3
     volumes:
       - ../..:/app/src
@@ -36,6 +36,18 @@ services:
     # command: ["node", "microservices/consumer"]    
     restart: unless-stopped
     links: 
+      - rabbitmq    
+  php-consumer:
+    image: dockerlamp/php-composer:0.2
+    build:
+      context: "../php-composer"
+    volumes:
+      - ../..:/var/www/html
+    working_dir: /var/www/html
+    command: [ "php", "-f", "./microservices/php-consumer/consumer.php" ]
+    mem_limit: 256m
+    restart: unless-stopped
+    links:
       - rabbitmq    
 volumes:
   rabbitdata:
