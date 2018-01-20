@@ -23,3 +23,4 @@ RUN \
 # RUN cat /xdebug.ini >> /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN docker-php-ext-install bcmath
+RUN docker-php-ext-install pcntl

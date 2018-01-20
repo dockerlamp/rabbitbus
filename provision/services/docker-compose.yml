@@ -13,12 +13,10 @@ services:
     image: node:8.9.3
     volumes:
       - ../..:/app/src
-      - ../../package.json:/app/package.json
-      # - ../../package-lock.json:/app/package-lock.json
       - nodecache:/root/.npm
-      - nodemodules:/app/node_modules
-    working_dir: /app
-    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/node-producer/producer.js"
+      - nodemodules:/app/src/node_modules
+    working_dir: /app/src
+    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w microservices microservices/node-producer/producer.js"
     # command: ["node", "microservices/producer"]
     restart: unless-stopped
     links: 
@@ -27,18 +25,16 @@ services:
     image: node:8.9.3
     volumes:
       - ../..:/app/src
-      - ../../package.json:/app/package.json
-      # - ../../package-lock.json:/app/package-lock.json      
       - nodecache:/root/.npm
-      - nodemodules:/app/node_modules      
-    working_dir: /app
-    command: "node node_modules/nodemon/bin/nodemon.js -L -w src/microservices src/microservices/node-consumer/consumer.js"
+      - nodemodules:/app/src/node_modules      
+    working_dir: /app/src
+    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w microservices microservices/node-consumer/consumer.js"
     # command: ["node", "microservices/consumer"]    
     restart: unless-stopped
     links: 
       - rabbitmq    
   php-consumer:
-    image: dockerlamp/php-composer:0.2
+    image: dockerlamp/php-composer:0.3
     build:
       context: "../php-composer"
     volumes:
@@ -48,7 +44,7 @@ services:
     mem_limit: 256m
     restart: unless-stopped
     links:
-      - rabbitmq    
+      - rabbitmq
 volumes:
   rabbitdata:
   nodemodules:

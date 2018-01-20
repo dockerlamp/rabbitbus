@@ -52,7 +52,7 @@ let startProducer = async () => {
             });
     };
     
-    setInterval(intervalCommand, 5000);
+    setInterval(intervalCommand, 1000);
 };
 
 retry(startProducer, {max_tries: 30, throw_original: true} )
