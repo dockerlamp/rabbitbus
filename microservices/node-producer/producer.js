@@ -3,6 +3,7 @@ console.log('Producer started');
 const retry = require('bluebird-retry');
 
 const messageBus = require('message-bus/create-durable-queue-channel');
+const CommandBus = require('message-bus/command-bus');
 
 let sendCommandCounter = 0;
 let sendHelloWorldCommand = async (channel, queueName) => {
@@ -55,5 +56,19 @@ let startProducer = async () => {
     setInterval(intervalCommand, 1000);
 };
 
-retry(startProducer, {max_tries: 30, throw_original: true} )
+let startCommandBusProducer = async () => {
+    let commandBus = new CommandBus(messageBus);
+    let obj = {
+        value: 'Hello World! ' + Math.round(Math.random()*1000),
+    };
+    let payload = JSON.stringify(obj);
+    await commandBus.sendCommand('hello.world.2', payload);
+}
+
+startCommandBusProducer()
+    .then(() => {
+        console.log('producer done');
+    })
     .catch(err => console.error('[-] start producer error', err));
+// retry(startProducer, {max_tries: 30, throw_original: true} )
+//     .catch(err => console.error('[-] start producer error', err));
