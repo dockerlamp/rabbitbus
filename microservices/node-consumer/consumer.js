@@ -2,7 +2,7 @@ console.log('Consumer started');
 
 const stats = require('measured').createCollection();
 
-const messageBus = require('message-bus/create-durable-queue-channel');
+const messageBus = require('../lib/message-bus/create-durable-queue-channel');
 
 let startConsumer = async (doAck) => {
     let channel = await messageBus.getChannel();   

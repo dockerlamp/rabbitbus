@@ -22,11 +22,10 @@ class CommandBus {
     async sendCommand(commandName, payload) {
         let channel = await this.connect();
         let sendResult = channel.sendToQueue(this.queueName, new Buffer(payload.toString()), { persistent: true});
-        console.log('[+] Sent', payload, sendResult);
+        console.log('[+] Sent', commandName, payload, sendResult);
     }
 
     addCommandHandler(commandName, handler) {
-
     }
 }
 
