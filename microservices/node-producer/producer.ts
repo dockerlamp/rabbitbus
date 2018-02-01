@@ -2,8 +2,9 @@ console.log('Producer started');
 
 const retry = require('bluebird-retry');
 
-const messageBus = require('../lib/message-bus/create-durable-queue-channel');
-const CommandBus = require('../lib/message-bus/command-bus');
+import * as durableChannel from '../lib/message-bus/create-durable-queue-channel'; 
+
+import { CommandBus } from '../lib/message-bus/CommandBus';
 
 // let sendCommandCounter = 0;
 // let sendHelloWorldCommand = async (channel, queueName) => {
@@ -57,7 +58,7 @@ const CommandBus = require('../lib/message-bus/command-bus');
 // };
 
 let startCommandBusProducer = async () => {
-    let commandBus = new CommandBus(messageBus);
+    let commandBus = new CommandBus(durableChannel);
     for(let i = 0; i < 100; i++) {
         let obj = {
             value: 'Hello World! ' + Math.round(Math.random()*1000),

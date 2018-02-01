@@ -16,8 +16,7 @@ services:
       - nodecache:/root/.npm
       - nodemodules:/app/src/node_modules
     working_dir: /app/src
-    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w microservices microservices/node-producer/producer.js"
-    # command: ["node", "microservices/producer"]
+    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w build build/microservices/node-producer/producer.js"
     restart: unless-stopped
     links: 
       - rabbitmq
@@ -28,8 +27,7 @@ services:
       - nodecache:/root/.npm
       - nodemodules:/app/src/node_modules      
     working_dir: /app/src
-    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w microservices microservices/node-consumer/consumer.js"
-    # command: ["node", "microservices/consumer"]    
+    command: "node node_modules/nodemon/bin/nodemon.js -L --delay 2 -w build build/microservices/node-consumer/consumer.js"
     restart: unless-stopped
     links: 
       - rabbitmq    
