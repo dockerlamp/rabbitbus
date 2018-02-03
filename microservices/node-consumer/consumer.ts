@@ -8,10 +8,15 @@ import { CommandBus } from '../lib/message-bus/CommandBus';
 let startConsumer = async () => {
     let commandBus = new CommandBus(durableChannel);    
     await commandBus.addCommandHandler('hello.world.2', async (paylaod) => {
-        throw new Error('error in hello world 2 handler');
-        //stats.meter('consume.2').mark();
+        if (!paylaod.valueV2) {
+            throw new Error('Wrong paylaod for hello world v2');
+        }
+        stats.meter('consume.2').mark();
     });
     await commandBus.addCommandHandler('hello.world.3', async (paylaod) => {
+        if (!paylaod.valueV3) {
+            throw new Error('Wrong paylaod for hello world v3');
+        }
         stats.meter('consume.3').mark();
     });
 };

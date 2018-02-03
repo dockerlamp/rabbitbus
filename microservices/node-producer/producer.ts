@@ -59,13 +59,17 @@ import { CommandBus } from '../lib/message-bus/CommandBus';
 
 let startCommandBusProducer = async () => {
     let commandBus = new CommandBus(channelFactory);
-    for(let i = 0; i < 1; i++) {
-        let payload = {
-            value: 'Hello World! ' + Math.round(Math.random()*1000),
+    for(let i = 0; i < 10; i++) {
+        let payloadV2 = {
+            valueV1: 'Hello World! ' + Math.round(Math.random()*1000),
             count: i,
         };
-        await commandBus.sendCommand('hello.world.2', payload);
-        await commandBus.sendCommand('hello.world.3', payload);
+        await commandBus.sendCommand('hello.world.2', payloadV2);
+        let payloadV3 = {
+            valueV3: 'Hello World! ' + Math.round(Math.random()*1000),
+            count: i,
+        };
+        await commandBus.sendCommand('hello.world.3', payloadV3);
     }
 }
 

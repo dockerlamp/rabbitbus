@@ -4,7 +4,10 @@ export interface IQueue {
 
     // getQueueName(): string
 
-    configureQueue(eventName: string): Promise<Channel>;
+    // configureQueue(eventName: string): Promise<Channel>;
     
-    getEventQueueName(eventName: string): string;
+    // getEventQueueName(eventName: string): string;
+
+    sendEvent(eventdName: string, payload): Promise<boolean>;
+    handleEvent(eventName: string, handler);
 }
