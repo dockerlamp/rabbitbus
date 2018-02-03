@@ -2,7 +2,9 @@ import { Channel } from 'amqplib';
 
 export interface IQueue {
 
-    getQueueName(): string
+    // getQueueName(): string
 
-    getChannel(): Channel;
+    configureQueue(eventName: string): Promise<Channel>;
+    
+    getEventQueueName(eventName: string): string;
 }
