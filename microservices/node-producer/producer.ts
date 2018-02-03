@@ -61,7 +61,7 @@ let startCommandBusProducer = async () => {
     let commandBus = new CommandBus(channelFactory);
     for(let i = 0; i < 10; i++) {
         let payloadV2 = {
-            valueV1: 'Hello World! ' + Math.round(Math.random()*1000),
+            valueV2: 'Hello World! ' + Math.round(Math.random()*1000),
             count: i,
         };
         await commandBus.sendCommand('hello.world.2', payloadV2);
