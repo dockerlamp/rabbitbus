@@ -8,44 +8,44 @@ export class DurableQueueChannelFactory implements IQueue {
     private channels = {};
     private channelFactory: RabbitChannelFactory;
     private readonly QUEUE_PREFIX = 'durable';
-    
+
     constructor(rabbitChannelFactory: RabbitChannelFactory) {
         this.channelFactory = rabbitChannelFactory;
     }
-    
+
     public getEventQueueName(eventName: string): string {
         return `${this.QUEUE_PREFIX}.${eventName}`;
     }
-    
+
     public async configureQueue(eventName: string): Promise<Channel> {
         let channel = this.channels[eventName];
         if (!channel) {
             channel = await this.channelFactory.getChannel();
             console.log(`[*] Assert queue: ${this.getEventQueueName(eventName)}`);
             await channel.assertQueue(
-                this.getEventQueueName(eventName), 
-                { durable: true }
+                this.getEventQueueName(eventName),
+                { durable: true },
             );
             this.channels[eventName] = channel;
         }
         return channel;
     }
-    
-    async sendEvent(eventdName: string, payload: any): Promise<boolean> {
+
+    public async sendEvent(eventdName: string, payload: any): Promise<boolean> {
         let channel = await this.configureQueue(eventdName);
         let sPayload = JSON.stringify(payload);
         let sendResult = channel.sendToQueue(
-            this.getEventQueueName(eventdName), 
+            this.getEventQueueName(eventdName),
             new Buffer(sPayload),
-            { persistent: true }
+            { persistent: true },
         );
         console.log('[+] Sent event', eventdName, sendResult);
         return sendResult;
     }
 
-    async handleEvent(eventName: string, handler) {
+    public async handleEvent(eventName: string, handler) {
         let channel = await this.configureQueue(eventName);
-        
+
         let consumeResult = await channel.consume(this.getEventQueueName(eventName), async (msg) => {
             let content = msg.content.toString();
             console.log('\t[x] Received event', eventName);
@@ -63,7 +63,7 @@ export class DurableQueueChannelFactory implements IQueue {
                     console.error('\t[-] Rejected event', eventName, err.toString());
                 }, 1000);
             }
-        }, {noAck: false});
+        }, { noAck: false });
         console.log(`[*] Event handler started: ${eventName}`);
     }
 }

@@ -16,6 +16,9 @@
         "microservices/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "vendor",
+        "local-composer-cache",
+        "provision"
     ]
 }

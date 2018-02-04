@@ -1,13 +1,14 @@
 console.log('Consumer started');
 
+// tslint:disable-next-line:no-var-requires
 const stats = require('measured').createCollection();
 
-import { factory as durableChannel }  from '../lib/message-bus/create-durable-queue-channel';
+import { factory as durableChannel } from '../lib/message-bus/create-durable-queue-channel';
 import { CommandBus } from '../lib/message-bus/CommandBus';
 import * as _ from 'lodash';
 
 let startConsumer = async () => {
-    let commandBus = new CommandBus(durableChannel);    
+    let commandBus = new CommandBus(durableChannel);
     await commandBus.addCommandHandler('hello.world.2', async (paylaod) => {
         if (!paylaod.valueV2) {
             throw new Error('Wrong paylaod for hello world v2');
@@ -31,10 +32,10 @@ startConsumer()
                 return key + '|' + value.count;
             });
             if (!_.isEqual(prevCountMap, countMap)) {
-                //show stats only if consumerd events count changes
+                // show stats only if consumerd events count changes
                 console.log('[=] consumer stats', stats.toJSON());
                 prevCountMap = countMap;
             }
         }, 5000);
-    } )
-    .catch(err => console.error(err));
+    })
+    .catch((err) => console.error(err));

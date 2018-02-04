@@ -13,7 +13,7 @@ export class CommandBus {
         payload.id = uuid4();
         await this.channelFactory.sendEvent(commandName, payload);
         console.log('\t[x] Sent command', commandName, payload.id);
-        
+
         return payload.id;
     }
 
