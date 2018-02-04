@@ -4,3 +4,4 @@
 /node_modules/
 /vendor
 /local-composer-cache
+/compile.log
