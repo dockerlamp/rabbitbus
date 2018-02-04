@@ -17,7 +17,7 @@
         "typescript": "^2.7.1"
     },
     "scripts": {
-        "build": "yarn run tsc",
-        "watch": "yarn run tsc -w"
+        "build": "yarn run tsc | tee compile.log",
+        "watch": "yarn run tsc -w | tee compile.log"
     }
 }
