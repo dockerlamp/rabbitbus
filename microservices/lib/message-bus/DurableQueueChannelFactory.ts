@@ -3,9 +3,13 @@ import { IQueue } from './IQueue';
 import { Channel } from 'amqplib';
 import { RabbitChannelFactory } from './RabbitChannelFactory';
 
+interface IEventChannelMap  {
+    [eventName: string]: Channel;
+}
+
 export class DurableQueueChannelFactory implements IQueue {
     // each command type has own channel and queue
-    private channels = {};
+    private channels: IEventChannelMap = {};
     private channelFactory: RabbitChannelFactory;
     private readonly QUEUE_PREFIX = 'durable';
 
